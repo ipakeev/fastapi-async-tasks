@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "fastapi"
+    static_configs:
+      - targets: ["fastapi:8000"]
+
+  - job_name: "arq"
+    static_configs:
+      - targets: ["arq:8001"]
+
+  - job_name: "saq"
+    static_configs:
+      - targets: ["saq:8002"]
+
+  - job_name: "faststream"
+    static_configs:
+      - targets: ["faststream:8003"]
+
+  - job_name: "async-celery"
+    static_configs:
+      - targets: ["async-celery-flower:5555"]

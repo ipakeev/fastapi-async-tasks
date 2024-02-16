@@ -1,0 +1,94 @@
+[tool.poetry]
+name = "fastapi-async-tasks"
+version = "0.1.0"
+description = ""
+authors = ["ipakeev <ipakeev93@gmail.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["all"], version = "^0.108.0"}
+arq = "^0.25.0"
+saq = {extras = ["hiredis", "web"], version = "^0.12.2"}
+uvicorn = "^0.25.0"
+pydantic-settings = "^2.1.0"
+redis = "^5.0.1"
+faststream = {extras = ["redis"], version = "^0.4.0"}
+prometheus-fastapi-instrumentator = "^6.1.0"
+locust = "^2.21.0"
+prometheus-async = {extras = ["aiohttp"], version = "^22.2.0"}
+locust-plugins = "^4.3.2"
+celery = "^5.3.6"
+flower = "^2.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+ruff = "^0.1.11"
+pytest = "^7.4.4"
+fakeredis = "^2.20.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | env
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+select = ["E", "F", "I001", "N", "W292"]
+ignore = ["E999", "E731"]
+
+fix = true
+unfixable = ["E731", "F401"]
+
+exclude = [
+    ".*",
+    "_*",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "*/migrations/"
+]
+per-file-ignores = {}
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.isort]
+combine-as-imports = true
+order-by-type = false
+
+[tool.pytest.ini_options]
+python_files = ['tests.py', 'test_*.py', '*_tests.py']
+filterwarnings = [
+    'ignore::DeprecationWarning',
+]

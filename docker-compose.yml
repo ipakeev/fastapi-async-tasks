@@ -1,0 +1,179 @@
+version: "3.8"
+
+services:
+    redis:
+        image: redis:7.2.4
+        ports:
+            - "6379:6379"
+        restart: on-failure
+        networks:
+            - default
+
+    prometheus:
+        image: prom/prometheus
+        ports:
+            - "9090:9090"
+        volumes:
+            - .prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        command:
+            -  --config.file=/etc/prometheus/prometheus.yml
+        restart: on-failure
+        networks:
+            - default
+
+    grafana:
+        image: grafana/grafana
+        ports:
+            - "3000:3000"
+        volumes:
+            - type: volume
+              source: grafana
+              target: /var/lib/grafana
+        environment:
+            - GF_SECURITY_ADMIN_USER=admin
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+            - GF_INSTALL_PLUGINS=redis-app
+        user: "0"
+        restart: on-failure
+        networks:
+            - default
+
+    fastapi:
+        image: fastapi-async-tasks
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+        depends_on:
+            - redis
+            - prometheus
+            - grafana
+        restart: on-failure
+        networks:
+            - default
+        deploy:
+            resources:
+                limits:
+                    memory: 200M
+                    cpus: "0.2"
+        command:
+            - uvicorn
+            - app.main:app
+            - --host=0.0.0.0
+            - --port=8000
+            - --reload
+            - --workers=${FASTAPI_WORKERS}
+
+    arq:
+        image: fastapi-async-tasks
+        ports:
+            - "8001:8001"  # metrics
+        volumes:
+            - .:/app
+        depends_on:
+            - fastapi
+        restart: on-failure
+        networks:
+            - default
+        deploy:
+            resources:
+                limits:
+                    memory: 200M
+                    cpus: "0.2"
+        command:
+            - python
+            - -m
+            - worker_arq
+
+    saq:
+        image: fastapi-async-tasks
+        ports:
+            - "8082:8082"  # web dashboard
+            - "8002:8002"  # metrics
+        volumes:
+            - .:/app
+        depends_on:
+            - fastapi
+        restart: on-failure
+        networks:
+            - default
+        deploy:
+            resources:
+                limits:
+                    memory: 200M
+                    cpus: "0.2"
+        command:
+            - python
+            - -m
+            - worker_saq
+
+    # faststream docs serve app.worker.faststream.app:faststream_app
+    faststream:
+        image: fastapi-async-tasks
+        ports:
+            - "8003:8003"  # metrics
+#            - "8004:8004"  # metrics
+#            - "8005:8005"  # metrics
+        volumes:
+            - .:/app
+        depends_on:
+            - fastapi
+        restart: on-failure
+        networks:
+            - default
+        deploy:
+            resources:
+                limits:
+                    memory: 200M
+                    cpus: "0.2"
+        command:
+            - faststream
+            - run
+            - app.worker.faststream.app:faststream_app
+            - --workers=${FASTSTREAM_CONCURRENCY}
+
+    async-celery:
+        image: fastapi-async-tasks
+        volumes:
+            - .:/app
+        depends_on:
+            - fastapi
+        restart: on-failure
+        networks:
+            - default
+        deploy:
+            resources:
+                limits:
+                    memory: 200M
+                    cpus: "0.2"
+        command:
+            - celery
+            - -A
+            - app.worker.async_celery.app.async_celery_app
+            - worker
+            - --loglevel=info
+            - --concurrency=${ASYNC_CELERY_CONCURRENCY}
+
+    async-celery-flower:
+        image: fastapi-async-tasks
+        ports:
+            - "5555:5555"
+        volumes:
+            - .:/app
+        depends_on:
+            - async-celery
+        restart: on-failure
+        networks:
+            - default
+        command:
+            - celery
+            - -A
+            - app.worker.async_celery.app.async_celery_app
+            - flower
+
+volumes:
+    grafana:
+
+networks:
+    default:
+        driver: bridge
