@@ -5,7 +5,7 @@ from app.api.router import router
 from app.store import lifespan
 
 app = FastAPI(
-    title="FastAPI job queues",
+    title="FastAPI async tasks",
     description="",
     lifespan=lifespan,
 )

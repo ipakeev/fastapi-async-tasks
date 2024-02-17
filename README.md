@@ -1,10 +1,10 @@
 # FastAPI with async background tasks + Prometheus + Grafana
 
-#### This project provides a way to setup and run asynchronous tasks using these libraries:
+#### This project provides a way to setup and run asynchronous (async/await) tasks using these libraries:
 - [Background](https://fastapi.tiangolo.com/tutorial/background-tasks/)
 - [ARQ](https://github.com/samuelcolvin/arq)
 - [SAQ](https://github.com/tobymao/saq)
-- [Faststream](https://github.com/airtai/faststream)
+- [FastStream](https://github.com/airtai/faststream)
 - [Celery](https://github.com/celery/celery)
 
 #### This way can also be useful for testing your code with eager execution. You can see it in *tests/conftest.py*.
@@ -56,7 +56,7 @@ Raw metrics are available here:
 - FastAPI: http://localhost:8000/metrics
 - ARQ: http://localhost:8001/metrics
 - SAQ: http://localhost:8002/metrics
-- Faststream: http://localhost:8003/metrics
+- FastStream: http://localhost:8003/metrics
 - Celery: http://localhost:5555/metrics
 
 ---
