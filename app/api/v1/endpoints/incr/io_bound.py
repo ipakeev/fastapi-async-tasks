@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse
 
 from app.api.deps import StoreDep
 from app.api.schemas import IncrInputSchema
-from app.worker.enums import TaskWorkerEnum
+from app.common.enums import TaskWorkerEnum
 
 router = APIRouter(tags=["io"])
 

@@ -4,6 +4,7 @@ from typing import Any
 import arq
 import arq.connections
 
+from app.common.enums import TaskWorkerEnum
 from app.worker.arq.tasks import (
     incr_cpu_bound,
     incr_cpu_bound_in_process_pool,
@@ -11,7 +12,6 @@ from app.worker.arq.tasks import (
     incr_io_bound_in_thread_pool,
 )
 from app.worker.base import AbstractTaskAccessor
-from app.worker.enums import TaskWorkerEnum
 
 
 class ArqTaskAccessor(AbstractTaskAccessor):

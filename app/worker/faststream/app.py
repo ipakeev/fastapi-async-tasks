@@ -10,9 +10,9 @@ from faststream.redis import RedisBroker
 from prometheus_async.aio.web import start_http_server, ThreadedMetricsHTTPServer
 from prometheus_async.types import ServiceDiscovery
 
+from app.common.logger import get_logger
 from app.config import settings
 from app.store import connect_to_store, disconnect_from_store
-from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

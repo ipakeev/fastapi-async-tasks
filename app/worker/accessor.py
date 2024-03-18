@@ -1,11 +1,11 @@
 from starlette.background import BackgroundTask
 
+from app.common.enums import TaskWorkerEnum
 from app.store import Store
 from app.worker.arq.accessor import ArqTaskAccessor
 from app.worker.async_celery.accessor import AsyncCeleryTaskAccessor
 from app.worker.background.accessor import BackgroundTaskAccessor
 from app.worker.base import AbstractTaskAccessor
-from app.worker.enums import TaskWorkerEnum
 from app.worker.faststream.accessor import FastStreamTaskAccessor
 from app.worker.saq.accessor import SaqTaskAccessor
 

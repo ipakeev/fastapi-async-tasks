@@ -1,5 +1,5 @@
+from app.common.enums import TaskWorkerEnum
 from app.worker.base import AbstractTaskAccessor
-from app.worker.enums import TaskWorkerEnum
 
 
 class BackgroundTaskAccessor(AbstractTaskAccessor):

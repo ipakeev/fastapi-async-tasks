@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.common.logger import get_logger
 from app.config import settings
-from app.utils.logger import get_logger
 
 
 class BaseAccessor:

@@ -3,7 +3,7 @@ import random
 import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
-from app.metrics.task import export_task_metrics
+from app.common.metrics import export_task_metrics
 from app.store import BaseAccessor, Store
 
 

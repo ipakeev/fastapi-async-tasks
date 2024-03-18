@@ -6,8 +6,8 @@ import saq
 from aiohttp.web_runner import AppRunner, TCPSite
 from saq.web.aiohttp import create_app
 
+from app.common.enums import TaskWorkerEnum
 from app.worker.base import AbstractTaskAccessor
-from app.worker.enums import TaskWorkerEnum
 from app.worker.saq.tasks import (
     incr_cpu_bound,
     incr_cpu_bound_in_process_pool,

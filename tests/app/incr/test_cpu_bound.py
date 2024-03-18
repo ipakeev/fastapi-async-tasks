@@ -1,8 +1,8 @@
 import pytest
 from httpx import AsyncClient
 
+from app.common.enums import TaskWorkerEnum
 from app.store import Store
-from app.worker.enums import TaskWorkerEnum
 
 
 @pytest.mark.parametrize(
