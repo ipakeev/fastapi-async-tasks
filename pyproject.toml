@@ -28,6 +28,7 @@ black = "^23.12.1"
 ruff = "^0.1.11"
 pytest = "^7.4.4"
 fakeredis = "^2.20.1"
+nest-asyncio = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core"]

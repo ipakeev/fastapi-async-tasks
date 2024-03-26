@@ -5,6 +5,7 @@ from contextlib import ExitStack
 from typing import Any
 from unittest.mock import AsyncMock, patch
 
+import nest_asyncio
 import pytest
 from fakeredis import FakeRedis
 from fakeredis.aioredis import FakeRedis as AsyncFakeRedis
@@ -16,6 +17,8 @@ from app.redis.accessor import RedisAccessor
 from app.store import get_store, lifespan, Store
 from app.worker.async_celery.app import async_celery_app
 from app.worker.faststream.app import faststream_app, faststream_broker
+
+nest_asyncio.apply()
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -105,8 +108,8 @@ def async_celery_eager_execution(store: Store) -> None:
     def execute_task(name: str) -> Callable[..., Any]:
         func = async_celery_app.functions[name]
 
-        async def wrapper(args: Any, kwargs: Any) -> Any:
-            return await func(*args, **kwargs)
+        def wrapper(args: Any, kwargs: Any) -> Any:
+            return asyncio.get_running_loop().run_until_complete(func(*args, **kwargs))
 
         return wrapper
 
