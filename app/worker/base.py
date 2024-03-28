@@ -12,6 +12,12 @@ class AbstractTaskAccessor(BaseAccessor):
         raise NotImplementedError
 
     @abstractmethod
+    async def sync_incr_io_bound(
+        self, *args: Any, **kwargs: Any
+    ) -> BackgroundTask | None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def incr_io_bound_in_thread_pool(
         self, *args: Any, **kwargs: Any
     ) -> BackgroundTask | None:

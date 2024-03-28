@@ -39,6 +39,11 @@ class CoreAccessor(BaseAccessor):
         return await self.store.redis.client.incr(key, value)
 
     @export_task_metrics
+    async def sync_incr_io_bound(self, key: str, value: int = 1) -> int:
+        time.sleep(0.1)
+        return self.store.redis.sync_client.incr(key, value)
+
+    @export_task_metrics
     async def incr_io_bound_in_thread_pool(self, key: str, value: int = 1) -> int:
         def func() -> int:
             time.sleep(0.1)

@@ -8,6 +8,9 @@ class BackgroundTaskAccessor(AbstractTaskAccessor):
     async def incr_io_bound(self, value: int = 1) -> None:
         await self.store.core.incr_io_bound(self.KEY, value)
 
+    async def sync_incr_io_bound(self, value: int = 1) -> None:
+        await self.store.core.sync_incr_io_bound(self.KEY, value)
+
     async def incr_io_bound_in_thread_pool(self, value: int = 1) -> None:
         await self.store.core.incr_io_bound_in_thread_pool(self.KEY, value)
 

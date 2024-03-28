@@ -18,6 +18,12 @@ class FastStreamTaskAccessor(AbstractTaskAccessor):
             channel="incr_io_bound",
         )
 
+    async def sync_incr_io_bound(self, value: int = 1) -> None:
+        await faststream_broker.publish(
+            message={"key": self.KEY, "value": value},
+            channel="sync_incr_io_bound",
+        )
+
     async def incr_io_bound_in_thread_pool(self, value: int = 1) -> None:
         await faststream_broker.publish(
             message={"key": self.KEY, "value": value},

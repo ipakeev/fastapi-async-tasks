@@ -13,6 +13,7 @@ from app.worker.saq.tasks import (
     incr_cpu_bound_in_process_pool,
     incr_io_bound,
     incr_io_bound_in_thread_pool,
+    sync_incr_io_bound,
 )
 
 
@@ -36,6 +37,7 @@ class SaqTaskAccessor(AbstractTaskAccessor):
     def tasks(self) -> list[Callable]:
         return [
             incr_io_bound,
+            sync_incr_io_bound,
             incr_io_bound_in_thread_pool,
             incr_cpu_bound,
             incr_cpu_bound_in_process_pool,
@@ -72,6 +74,11 @@ class SaqTaskAccessor(AbstractTaskAccessor):
     async def incr_io_bound(self, value: int = 1) -> None:
         await self._queue.enqueue(
             incr_io_bound.__name__, kwargs={"key": self.KEY, "value": value}
+        )
+
+    async def sync_incr_io_bound(self, value: int = 1) -> None:
+        await self._queue.enqueue(
+            sync_incr_io_bound.__name__, kwargs={"key": self.KEY, "value": value}
         )
 
     async def incr_io_bound_in_thread_pool(self, value: int = 1) -> None:

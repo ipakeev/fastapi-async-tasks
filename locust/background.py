@@ -13,7 +13,7 @@ class TaskUser(HttpUser):
         endpoints = (
             [endpoint]
             if endpoint
-            else ["io/simple", "io/thread", "cpu/simple", "cpu/process"]
+            else ["io/simple", "io/sync", "io/thread", "cpu/simple", "cpu/process"]
         )
 
         for endpoint in endpoints:

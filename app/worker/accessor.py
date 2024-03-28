@@ -20,6 +20,14 @@ class WorkerAccessor(AbstractTaskAccessor):
         self.async_celery = AsyncCeleryTaskAccessor(store)
         self.faststream = FastStreamTaskAccessor(store)
 
+        self.strategy = {
+            TaskWorkerEnum.background: self.background,
+            TaskWorkerEnum.arq: self.arq,
+            TaskWorkerEnum.saq: self.saq,
+            TaskWorkerEnum.async_celery: self.async_celery,
+            TaskWorkerEnum.faststream: self.faststream,
+        }
+
     async def connect(self) -> None:
         self.logger.info("Connecting to workers")
         await self.background.connect()
@@ -38,46 +46,37 @@ class WorkerAccessor(AbstractTaskAccessor):
         await self.faststream.disconnect()
         self.logger.info("Disconnected from workers")
 
-    def _get_task_accessor(self, worker: TaskWorkerEnum) -> AbstractTaskAccessor:
-        match worker:
-            case TaskWorkerEnum.background:
-                return self.background
-            case TaskWorkerEnum.arq:
-                return self.arq
-            case TaskWorkerEnum.saq:
-                return self.saq
-            case TaskWorkerEnum.async_celery:
-                return self.async_celery
-            case TaskWorkerEnum.faststream:
-                return self.faststream
-            case _:
-                raise NotImplementedError
+    async def _get_task_accessor(self, worker: TaskWorkerEnum) -> AbstractTaskAccessor:
+        await self._dummy_work()
+        return self.strategy[worker]
 
     async def _dummy_work(self) -> None:
         await self.store.core.async_calculations(count=100)
 
     async def incr_io_bound(self, worker: TaskWorkerEnum, value: int) -> BackgroundTask:
-        await self._dummy_work()
-        accessor = self._get_task_accessor(worker)
+        accessor = await self._get_task_accessor(worker)
         return BackgroundTask(accessor.incr_io_bound, value=value)
+
+    async def sync_incr_io_bound(
+        self, worker: TaskWorkerEnum, value: int
+    ) -> BackgroundTask:
+        accessor = await self._get_task_accessor(worker)
+        return BackgroundTask(accessor.sync_incr_io_bound, value=value)
 
     async def incr_io_bound_in_thread_pool(
         self, worker: TaskWorkerEnum, value: int
     ) -> BackgroundTask:
-        await self._dummy_work()
-        accessor = self._get_task_accessor(worker)
+        accessor = await self._get_task_accessor(worker)
         return BackgroundTask(accessor.incr_io_bound_in_thread_pool, value=value)
 
     async def incr_cpu_bound(
         self, worker: TaskWorkerEnum, value: int
     ) -> BackgroundTask:
-        await self._dummy_work()
-        accessor = self._get_task_accessor(worker)
+        accessor = await self._get_task_accessor(worker)
         return BackgroundTask(accessor.incr_cpu_bound, value=value)
 
     async def incr_cpu_bound_in_process_pool(
         self, worker: TaskWorkerEnum, value: int
     ) -> BackgroundTask:
-        await self._dummy_work()
-        accessor = self._get_task_accessor(worker)
+        accessor = await self._get_task_accessor(worker)
         return BackgroundTask(accessor.incr_cpu_bound_in_process_pool, value=value)

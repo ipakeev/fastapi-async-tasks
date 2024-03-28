@@ -16,6 +16,14 @@ async def simple(
     return JSONResponse({"status": "ok", "message": "io-simple"}, background=task)
 
 
+@router.post("/sync/{worker}")
+async def sync(
+    worker: TaskWorkerEnum, body: IncrInputSchema, store: StoreDep
+) -> JSONResponse:
+    task = await store.worker.sync_incr_io_bound(worker, body.value)
+    return JSONResponse({"status": "ok", "message": "io-simple"}, background=task)
+
+
 @router.post("/thread/{worker}")
 async def in_thread_pool(
     worker: TaskWorkerEnum, body: IncrInputSchema, store: StoreDep
