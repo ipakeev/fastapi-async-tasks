@@ -104,7 +104,7 @@ def saq_eager_execution(store: Store) -> Generator[AsyncMock, None, None]:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def async_celery_eager_execution(store: Store) -> None:
+def async_celery_eager_execution(store: Store) -> Generator[None, None, None]:
     def execute_task(name: str) -> Callable[..., Any]:
         func = async_celery_app.functions[name]
 

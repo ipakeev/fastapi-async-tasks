@@ -149,7 +149,7 @@ services:
         command:
             - celery
             - -A
-            - app.worker.async_celery.app.async_celery_app
+            - app.worker.async_celery.app:async_celery_app
             - worker
             - --loglevel=info
             - --concurrency=${ASYNC_CELERY_CONCURRENCY}
@@ -168,7 +168,7 @@ services:
         command:
             - celery
             - -A
-            - app.worker.async_celery.app.async_celery_app
+            - app.worker.async_celery.app:async_celery_app
             - flower
 
 volumes:
