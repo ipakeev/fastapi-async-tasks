@@ -105,6 +105,9 @@ def saq_eager_execution(store: Store) -> Generator[AsyncMock, None, None]:
 
 @pytest.fixture(scope="session", autouse=True)
 def async_celery_eager_execution(store: Store) -> Generator[None, None, None]:
+    # register tasks in celery app
+    from app.worker.async_celery import tasks  # noqa: F401
+
     def execute_task(name: str) -> Callable[..., Any]:
         func = async_celery_app.functions[name]
 
@@ -126,6 +129,9 @@ def async_celery_eager_execution(store: Store) -> Generator[None, None, None]:
 
 @pytest.fixture(scope="session", autouse=True)
 def faststream_eager_execution(store: Store) -> Generator[AsyncMock, None, None]:
+    # register tasks in faststream app
+    from app.worker.faststream import tasks  # noqa: F401
+
     async def resolver(message: dict, channel: str) -> Any:
         func = faststream_app.get(channel)
         return await func(**message)
