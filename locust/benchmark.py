@@ -17,7 +17,12 @@ class TaskUser(HttpUser):
             else ["io/simple", "io/sync", "io/thread", "cpu/simple", "cpu/process"]
         )
 
-        workers = ["arq", "saq", "faststream", "async-celery"]
+        worker = os.environ.get("worker")
+        workers = (
+            [worker]
+            if worker
+            else ["arq", "saq", "faststream", "async-celery"]
+        )
 
         params = [(endpoint, worker) for endpoint in endpoints for worker in workers]
         shuffle(params)
