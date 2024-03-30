@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     SAQ_DASHBOARD_PORT: int = 8082
     SAQ_CONCURRENCY: int = 3
 
-    FASTSTREAM_EXPORTER_PORTS: list[int] = [8003]
+    FASTSTREAM_EXPORTER_PORTS: list[int] = [8003, 8004, 8005]
     FASTSTREAM_CONCURRENCY: int = 1
 
     ASYNC_CELERY_CONCURRENCY: int = 3

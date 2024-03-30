@@ -16,7 +16,7 @@ scrape_configs:
 
   - job_name: "faststream"
     static_configs:
-      - targets: ["faststream:8003"]
+      - targets: ["faststream:8003", "faststream:8004", "faststream:8005"]
 
   - job_name: "async-celery"
     static_configs:

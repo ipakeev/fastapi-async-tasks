@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import AbstractEventLoop
 from collections.abc import Callable
+from functools import wraps
 from typing import Any, TypeVar
 
 from celery import Celery, signals
@@ -33,6 +34,7 @@ class AsyncCelery(Celery):
 
         def decorator(func: Callable[..., T]) -> Callable[..., T]:
             @create_task(**opts)
+            @wraps(func)
             def wrapper(
                 *args: Any, loop: AbstractEventLoop | None = None, **kwargs: Any
             ) -> T:
