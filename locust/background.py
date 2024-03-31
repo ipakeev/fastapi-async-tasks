@@ -1,4 +1,5 @@
 import os
+from random import shuffle
 
 from locust import between, HttpUser, task
 
@@ -15,6 +16,7 @@ class TaskUser(HttpUser):
             if endpoint
             else ["io/simple", "io/sync", "io/thread", "cpu/simple", "cpu/process"]
         )
+        shuffle(endpoints)
 
         for endpoint in endpoints:
             self.client.post(f"/api/v1/incr/{endpoint}/background", json={"value": 1})

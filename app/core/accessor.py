@@ -1,6 +1,5 @@
 import asyncio
 import random
-import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 from app.common.metrics import export_task_metrics
@@ -27,29 +26,22 @@ class CoreAccessor(BaseAccessor):
         for i in range(count):
             _ = i % random.randint(1, 100)
 
-    @staticmethod
-    async def async_calculations(count: int = 1_000_000) -> None:
-        for i in range(count):
-            _ = i % random.randint(1, 100)
-            await asyncio.sleep(0.0)
-
     @export_task_metrics
     async def incr_io_bound(self, key: str, value: int = 1) -> int:
-        await asyncio.sleep(0.1)
         return await self.store.redis.client.incr(key, value)
 
     @export_task_metrics
     async def sync_incr_io_bound(self, key: str, value: int = 1) -> int:
-        time.sleep(0.1)
         return self.store.redis.sync_client.incr(key, value)
 
     @export_task_metrics
     async def incr_io_bound_in_thread_pool(self, key: str, value: int = 1) -> int:
-        def func() -> int:
-            time.sleep(0.1)
-            return self.store.redis.sync_client.incr(key, value)
-
-        return await self._loop.run_in_executor(self._thread_executor, func)
+        return await self._loop.run_in_executor(
+            self._thread_executor,
+            self.store.redis.sync_client.incr,
+            key,
+            value,
+        )
 
     @export_task_metrics
     async def incr_cpu_bound(self, key: str, value: int = 1) -> int:

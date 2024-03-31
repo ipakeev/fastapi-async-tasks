@@ -111,7 +111,7 @@ def async_celery_eager_execution(store: Store) -> Generator[None, None, None]:
     def execute_task(name: str) -> Callable[..., Any]:
         func = async_celery_app.functions[name]
 
-        def wrapper(args: Any, kwargs: Any) -> Any:
+        def wrapper(args: Any, kwargs: Any, **_: Any) -> Any:
             return asyncio.get_running_loop().run_until_complete(func(*args, **kwargs))
 
         return wrapper

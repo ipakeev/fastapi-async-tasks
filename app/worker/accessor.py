@@ -47,11 +47,7 @@ class WorkerAccessor(AbstractTaskAccessor):
         self.logger.info("Disconnected from workers")
 
     async def _get_task_accessor(self, worker: TaskWorkerEnum) -> AbstractTaskAccessor:
-        await self._dummy_work()
         return self.strategy[worker]
-
-    async def _dummy_work(self) -> None:
-        await self.store.core.async_calculations(count=100)
 
     async def incr_io_bound(self, worker: TaskWorkerEnum, value: int) -> BackgroundTask:
         accessor = await self._get_task_accessor(worker)
