@@ -74,6 +74,7 @@ env endpoint={endpoint} locust --config locust/master.conf -f locust/background.
 
 Available {endpoint}s:
 - io/simple
+- io/sync
 - io/thread
 - cpu/simple
 - cpu/process

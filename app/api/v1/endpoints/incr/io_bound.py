@@ -21,7 +21,7 @@ async def sync(
     worker: TaskWorkerEnum, body: IncrInputSchema, store: StoreDep
 ) -> JSONResponse:
     task = await store.worker.sync_incr_io_bound(worker, body.value)
-    return JSONResponse({"status": "ok", "message": "io-simple"}, background=task)
+    return JSONResponse({"status": "ok", "message": "io-sync"}, background=task)
 
 
 @router.post("/thread/{worker}")
